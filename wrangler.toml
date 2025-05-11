@@ -1,2 +1,6 @@
 name = "rholden-dev"
 pages_build_output_dir = "public"
+compatibility_date = "2025-05-11"
+
+[env]
+production = { }

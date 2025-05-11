@@ -1,0 +1,1 @@
+Its a blog, you can find it at https://rholden.dev
