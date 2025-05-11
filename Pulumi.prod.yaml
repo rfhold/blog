@@ -1,0 +1,7 @@
+encryptionsalt: v1:qCtw7whBvIE=:v1:/r4NveR4sJ8oMZgf:KEWPjBzyiD8yj3CYFVLMsN9r1B9KrQ==
+config:
+  github:owner: rfhold
+  github-cfg:repo: blog
+  cloudflare-cfg:accountId: 9bed88b1d314e286c5d8a09bf48c9331
+  cloudflare:apiToken:
+    secure: v1:yZuWllfx1ckCCOX8:P7OUKfsyTK6Xt/tFy+ujb+CFFLHO5zl6vB5deMcGN1kV/Q5i/0VvL+zi69r5TzqlF5dGnS+P0vI=

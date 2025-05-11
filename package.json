@@ -1,0 +1,17 @@
+{
+    "name": "blog",
+    "main": "index.ts",
+    "scripts": {
+        "deploy": "wrangler pages deploy"
+    },
+    "devDependencies": {
+        "@types/node": "^18",
+        "typescript": "^5.0.0",
+        "wrangler": "^4.14.4"
+    },
+    "dependencies": {
+        "@pulumi/cloudflare": "^6.1.2",
+        "@pulumi/github": "^6.7.2",
+        "@pulumi/pulumi": "^3.113.0"
+    }
+}
