@@ -7,7 +7,7 @@ categories = ['web', 'personal-development']
 +++
 I wanted a place that I could document configuration, processes, and solutions for future reference. A blog seems like a good enough place for that. The general idea is to have a markdown based blog that I could edit in something like Obsidian, push the changes with git, and have it automatically deploy.
 
-The end result lives at [github.com/rfhold/blog](https://github.com/rfhold/bloge)
+The end result lives at [github.com/rfhold/blog](https://github.com/rfhold/blog)
 
 ## Overview
 
