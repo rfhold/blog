@@ -41,7 +41,7 @@ jobs:
       - name: Update Comment
         id: update_comment
         run: |
-          COMMENT_BODY="PR Preview Url ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
+          COMMENT_BODY="PR Preview Url ${{ steps.deploy.outputs.deployment-url }}"
           PR_NUMBER="${{ github.event.pull_request.number }}"
           GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
 
