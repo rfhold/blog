@@ -8,6 +8,10 @@ on:
 jobs:
   deploy-preview:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+      issues: write
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,9 +21,14 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.2'
+
       - name: Build with Hugo
         run: |
-          go run github.com/gohugoio/hugo@latest
+          go run github.com/gohugoio/hugo@latest -D
 
       - name: Deploy Preview
         id: deploy
@@ -27,12 +36,31 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy --environment preview
+          command: pages deploy --branch preview
 
-      - name: print pages-deployment-alias-url
-        env:
-          DEPLOYMENT_ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+      - name: Update Comment
+        id: update_comment
         run: |
-          echo "Deployment Alias Url $DEPLOYMENT_ALIAS_URL"
-          echo "Deployment Url $DEPLOYMENT_URL"
+          COMMENT_BODY="PR Preview Url ${{ steps.deploy.outputs.deployment-url }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          # Fetch existing comments
+          COMMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments")
+
+          # Check if the comment already exists
+          if echo "$COMMENTS" | grep -q "PR Preview Url"; then
+            # Update existing comment
+            COMMENT_ID=$(echo "$COMMENTS" | jq '.[] | select(.body | contains("PR Preview Url")) | .id')
+            curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"body\": \"$COMMENT_BODY\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID"
+          else
+            # Create a new comment
+            curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"body\": \"$COMMENT_BODY\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
+          fi
