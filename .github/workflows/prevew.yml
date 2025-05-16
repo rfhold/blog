@@ -34,10 +34,29 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: pages deploy --branch preview
 
-      - name: print pages-deployment-alias-url
-        env:
-          DEPLOYMENT_ALIAS_URL: ${{ steps.deploy.outputs.pages-deployment-alias-url }}
-          DEPLOYMENT_URL: ${{ steps.deploy.outputs.deployment-url }}
+      - name: Update Comment
+        id: update_comment
         run: |
-          echo "Deployment Alias Url $DEPLOYMENT_ALIAS_URL"
-          echo "Deployment Url $DEPLOYMENT_URL"
+          COMMENT_BODY="PR Preview Url ${{ steps.deploy.outputs.pages-deployment-alias-url }}"
+          PR_NUMBER="${{ github.event.pull_request.number }}"
+          GITHUB_TOKEN="${{ secrets.GITHUB_TOKEN }}"
+
+          # Fetch existing comments
+          COMMENTS=$(curl -s -H "Authorization: token $GITHUB_TOKEN" \
+            "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments")
+
+          # Check if the comment already exists
+          if echo "$COMMENTS" | grep -q "PR Preview Url"; then
+            # Update existing comment
+            COMMENT_ID=$(echo "$COMMENTS" | jq '.[] | select(.body | contains("PR Preview Url")) | .id')
+            curl -s -X PATCH -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"body\": \"$COMMENT_BODY\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/comments/$COMMENT_ID"
+          else
+            # Create a new comment
+            curl -s -X POST -H "Authorization: token $GITHUB_TOKEN" \
+              -H "Content-Type: application/json" \
+              -d "{\"body\": \"$COMMENT_BODY\"}" \
+              "https://api.github.com/repos/${{ github.repository }}/issues/$PR_NUMBER/comments"
+          fi
