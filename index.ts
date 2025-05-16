@@ -45,9 +45,9 @@ new github.ActionsSecret("CLOUDFLARE_API_TOKEN", {
 	secretName: "CLOUDFLARE_API_TOKEN",
 });
 
-new github.ActionsVariable("CLOUDFLARE_ACCOUNT_ID", {
+new github.ActionsSecret("CLOUDFLARE_ACCOUNT_ID", {
 	repository: repo,
-	value: accountId,
-	variableName: "CLOUDFLARE_ACCOUNT_ID",
+	plaintextValue: accountId,
+	secretName: "CLOUDFLARE_ACCOUNT_ID",
 });
 

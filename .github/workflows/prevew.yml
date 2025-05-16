@@ -1,12 +1,12 @@
-name: Deploy
+name: Deploy Preview
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  deploy:
+  deploy-preview:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -21,13 +21,13 @@ jobs:
         run: |
           go run github.com/gohugoio/hugo@latest
 
-      - name: Deploy
+      - name: Deploy Preview
         id: deploy
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy
+          command: pages deploy --environment preview
 
       - name: print pages-deployment-alias-url
         env:
