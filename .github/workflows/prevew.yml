@@ -20,7 +20,7 @@ jobs:
       - name: Set up Bun
         uses: oven-sh/setup-bun@v2
         with:
-          bun-version: '1.1'
+          bun-version: '1.2'
 
       - name: Build with Hugo
         run: |
@@ -32,7 +32,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy --environment preview
+          command: pages deploy --env preview
 
       - name: print pages-deployment-alias-url
         env:
