@@ -17,9 +17,14 @@ jobs:
         with:
           go-version: '1.24'
 
+      - name: Set up Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: '1.1'
+
       - name: Build with Hugo
         run: |
-          go run github.com/gohugoio/hugo@latest
+          go run github.com/gohugoio/hugo@latest -D
 
       - name: Deploy Preview
         id: deploy
